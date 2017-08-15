@@ -1,3 +1,15 @@
-<% cache ("flickr-sidebar") do %>
-  <%= render_flickr_sidebar_widget('29517303@N05') %>
+<%= form_tag('/', method: :get) do %>
+  <%= text_field_tag :user_id, nil, placeholder: "Enter Username or User ID" %>
+  <%= submit_tag "Search", name: nil %>
+<% end %>
+
+<% unless params[:user_id].present? %>
+  <h3>Enter a Flickr Username or User ID, then hit "Search"</h3>
+<% else %>
+  <% if params[:user_id].to_s =~ /\A\d+@N\d\d\z/ %>
+    <%= render_flickr_stream(params[:user_id]) %>
+  <% else %>
+    <% id = get_id_from_username(params[:user_id])["nsid"] %>
+    <%= render_flickr_stream(id) %>
+  <% end %>
 <% end %>
